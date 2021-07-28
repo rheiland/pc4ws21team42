@@ -1,6 +1,30 @@
 VERSION := $(shell grep . VERSION.txt | cut -f1 -d:)
 PROGRAM_NAME:= myproj
 
+osRelease = $(shell lsb_release -r | sed -e "s/Release:\W*//" -e "s/\..*//")
+ifeq ($(osRelease),7)
+   hostName = $(shell hostname | sed -e "s:[-_].*::")$(osRelease)
+else
+   hostName = $(shell hostname | sed -e "s:[-_].*::")
+endif
+
+ifeq ($(hostName),nanohub7)
+   BIN = ../bin
+	MODINIT = . /etc/environ.sh
+   MODCMD = use -e -r anaconda3-5.1
+else
+ifeq ($(hostName),rice7)
+   BIN = ../bin/rice7
+	MODINIT = . $(MODULESHOME)/init/sh
+   MODCMD = module purge 2> /dev/null; module load gcc/7.3.0
+endif
+ifeq ($(hostName),brown7)
+   BIN = ../bin/brown7
+	MODINIT = . $(MODULESHOME)/init/sh
+   MODCMD = module purge 2> /dev/null; module load gcc/7.3.0
+endif
+endif
+
 CC := g++
 
 # Check for environment definitions of compiler 
