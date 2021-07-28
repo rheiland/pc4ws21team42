@@ -183,12 +183,15 @@ reset:
 	rm -f ./config/*.csv
 	
 # next 2 targets for nanoHUB
-install: 
-	. /etc/environ.sh; use -e -r anaconda3-5.1; make all
-	cp $(PROGRAM_NAME) ../bin
+# next 2 targets for nanoHUB
+install:
+	$(MODINIT); $(MODCMD);  make all
+	install --mode 0755 -D $(PROGRAM_NAME) $(BIN)/$(PROGRAM_NAME)
 
 distclean: clean
-	rm -f ../bin/$(PROGRAM_NAME)
+	rm -f $(BIN)/$(PROGRAM_NAME)
+	rm -rf $(BIN)/__pycache__
+	rm -rf ../.ipynb_checkpoints
 
 clean:
 	rm -f *.o
